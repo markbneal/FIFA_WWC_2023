@@ -1,6 +1,7 @@
-# API to get data
+# API to get data for FIFA Women's World Cup 2023
 
-# install.packages("tidyverse") #didn't work on workbench
+# Setup (some issues with packages on workbench) ####
+# install.packages("tidyverse") # didn't work on workbench
 # install.packages("ragg") #didn't work on workbench
 # install.packages("fribidi") #didn't work on workbench, raised assist
 # ggplot2, for data visualisation.
@@ -28,26 +29,25 @@ library(ggrepel)
 library(httr)
 library(jsonlite)
 
+# Note, can skip to "read in preprocessed data" unless update is required
 
-# # Source of Data, Option 1, requires signup, not used
+# # Alternative Source of Data, requires signup, not used
 # # https://live-score-api.com/
 # res = GET("http://livescore-api.com/api-client/scores/history.json?key=demo_key&secret=demo_secret")
 
 
-# Source of Data, Option 2, requires signup
+# Source of Data, also requires signup
 # https://apifootball.com/documentation/#Events
 
-  
 API_football <- readLines("creds.txt")
-
 
 res = GET(paste0("apiv3.apifootball.com/?action=get_countries&APIkey=", API_football))
 res
 
-# Get game data
+# Get game data (note date is hardcoded in url)
 # From documentation, League #20 is Womens World Cup
 res2 <- GET(paste0("https://apiv3.apifootball.com/?action=get_events&from=2023-07-01&to=2023-07-30&league_id=20&APIkey=",
-                   eAPI_football))
+                   API_football))
 
 
 saveRDS(res2, "res2.RDS")
@@ -64,13 +64,15 @@ data_list <- httr::content(res2, encoding = "UTF-8", as = "parsed")
 data_df <- map(data_list, unlist, recursive = TRUE) %>% bind_rows() # Messy, makes 3500 columns!
 
 saveRDS(data_df, "data_df.RDS")
+
+# Read in preprocessed data ####
 data_df <- readRDS("data_df.RDS")
 
-# read and join ranks 
+# Read and join ranks ####
 # (as of June 6 2023, https://www.fifa.com/fifa-world-ranking/women?dateId=ranking_20230609)
 ranks <- read_excel("FIFA Womens Ranking.xlsx", sheet = "rank")
 
-# Create Rank difference and point difference
+# Create Rank difference and point difference ####
 # Check country names first
 data_df$match_awayteam_name
 data_df$match_hometeam_name
@@ -132,7 +134,7 @@ data_df <- left_join(data_df, ranks, by = c("match_hometeam_name" = "Team"))
 data_df <- left_join(data_df, ranks, by = c("match_awayteam_name" = "Team"))
 
 data_df <- data_df %>% 
-  mutate(rank_diff = RK.x - RK.y) %>% 
+  mutate(rank_diff = RK.y - RK.x) %>% 
   mutate(point_diff = as.numeric(match_hometeam_score) - as.numeric(match_awayteam_score)) %>% 
   mutate(game = str_c(match_hometeam_name, " v ", match_awayteam_name))
 
@@ -142,11 +144,17 @@ data_df$point_diff
 
 data_df$rank_diff
 
+# Plot results ####
 # geom repel error
 # https://stackoverflow.com/a/68084961/4927395
 # x11()
 ggplot(data = data_df, aes(x = rank_diff, y = point_diff))+
   geom_jitter() +
   geom_smooth(method = "lm", formula = "y ~ x") +
-  geom_text(aes(label = game))
+  xlab("Rank Difference (Away - Home)")+
+  ylab("Point Difference (Home - Away)")+
+  ggtitle("Greater rank differences typically lead to \ngreater point differences")+
+  geom_text(aes(label = game), size=3 )
   #geom_text_repel(aes(label = game)) # caused error
+
+ggsave("rank difference vs point difference.png")
