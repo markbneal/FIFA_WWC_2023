@@ -69,7 +69,7 @@ q <- ggplot(data = data_df_join, aes(x = abs_rank_diff, y = rel_point_diff))+
 
 q
 
-ggsave("absolute rank difference vs point difference.png")
+ggsave("absolute-rank-difference-vs-point-difference.png")
 
 q1 <- ggMarginal(q, type="histogram")
 q1

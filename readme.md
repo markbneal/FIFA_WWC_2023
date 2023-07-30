@@ -20,4 +20,4 @@ Fixes country names that were inconsistent.
 
 Creates variables and then plots!
 
-![Plot of rank difference]("absolute rank difference vs point difference.png")
+![Plot of rank difference](absolute-rank-difference-vs-point-difference.png)
