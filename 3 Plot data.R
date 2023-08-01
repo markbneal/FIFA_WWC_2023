@@ -1,11 +1,12 @@
 # 3 Plot data
 
-library(tidyr)
-library(dplyr)
-library(purrr)
-library(stringr)
+# library(tidyr)
+# library(dplyr)
+# library(purrr)
+# library(stringr)
+# library(ggplot2)
+library(tidyverse)
 
-library(ggplot2)
 library(ggrepel)
 library(ggpmisc)
 library(ggExtra)
