@@ -34,7 +34,7 @@ p <- ggplot(data = data_df_join, aes(x = rank_diff, y = point_diff))+
   annotate("text", x=-40, y=5, label = "Hammering by more than expected", colour = "darkgreen")+
   ggtitle("Greater rank differences typically lead to \ngreater point differences")+
   #geom_text(aes(label = game), size=3 )
-  geom_text_repel(aes(label = game)) # caused error on workbench
+  geom_text_repel(aes(label = game_result)) # caused error on workbench
 
 p
 ggsave("rank difference vs point difference.png")
@@ -43,8 +43,10 @@ p1 <- ggMarginal(p, type="histogram")
 p1
 class(p1)
 
-ggsave(p1, "rank difference vs point difference with marginals.png") #doesn't save properly
-
+#ggsave("rank difference vs point difference with marginals.png") #doesn't save properly
+png("rank difference vs point difference with marginals.png", units = "in", height = 8, width = 7, res = 300)
+p1
+dev.off()
 
 q <- ggplot(data = data_df_join, aes(x = abs_rank_diff, y = rel_point_diff))+
   geom_rect(mapping=aes(xmin=0, xmax=70, ymin=-0.5, ymax=0.5), fill = "blue", color=NA, alpha=0.005) +
@@ -65,7 +67,7 @@ q <- ggplot(data = data_df_join, aes(x = abs_rank_diff, y = rel_point_diff))+
   annotate("text", x=40, y=5, label = "Hammered by more than expected", colour = "darkgreen")+
   ggtitle("Greater rank differences typically lead to \ngreater point differences")+
   #geom_text(aes(label = game), size=3 )
-  geom_text_repel(aes(label = game), size = 3) # caused error
+  geom_text_repel(aes(label = game_result), size = 3) # caused error
 
 q
 
@@ -74,5 +76,7 @@ ggsave("absolute-rank-difference-vs-point-difference.png", height = 8, width = 7
 q1 <- ggMarginal(q, type="histogram")
 q1
 
-ggsave("absolute rank difference vs point difference with marginals.png") #doesn't save properly
-
+#ggsave("absolute rank difference vs point difference with marginals.png") #doesn't save properly
+png("absolute rank difference vs point difference with marginals.png", units = "in", height = 8, width = 7, res = 300)
+q1
+dev.off()

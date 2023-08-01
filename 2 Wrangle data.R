@@ -70,11 +70,14 @@ data_df <- data_df %>%
 sort(data_df$match_awayteam_name)
 sort(data_df$match_hometeam_name)
 country_names <- as_tibble(sort(unique(c(data_df$match_awayteam_name, data_df$match_hometeam_name))))
-# now do ranks etc
+
+# now add ranks etc ####
 
 data_df <- left_join(data_df, ranks, by = c("match_hometeam_name" = "Team"))
 data_df <- left_join(data_df, ranks, by = c("match_awayteam_name" = "Team"))
 
+
+# Make differences
 data_df <- data_df %>% 
   mutate(rank_diff = RK.y - RK.x) %>% 
   mutate(point_diff = as.numeric(match_hometeam_score) - as.numeric(match_awayteam_score)) %>% 
@@ -86,11 +89,22 @@ data_df$point_diff
 
 data_df$rank_diff
 
+# make absolute differences
 data_df <- data_df %>% 
   mutate(rel_point_diff = case_when(rank_diff >= 0 ~ point_diff,
                                     rank_diff < 0 ~ -point_diff,
                                     TRUE ~ point_diff)) %>% 
   mutate(abs_rank_diff = abs(rank_diff))
 
+# Make graph labels with winner first
+data_df <- data_df %>% 
+  mutate(winner = case_when(as.numeric(match_hometeam_score) > as.numeric(match_awayteam_score) ~ match_hometeam_name,
+                            as.numeric(match_hometeam_score) < as.numeric(match_awayteam_score) ~ match_awayteam_name,
+                                    TRUE ~ match_awayteam_name)) %>% 
+  mutate(loser = case_when(as.numeric(match_hometeam_score) > as.numeric(match_awayteam_score) ~ match_awayteam_name,
+                            as.numeric(match_hometeam_score) < as.numeric(match_awayteam_score) ~ match_hometeam_name,
+                            TRUE ~ match_hometeam_name)) %>% 
+  mutate(game_result = case_when(point_diff == 0 ~ str_c(winner, " draw\n", loser),
+                                 TRUE ~ str_c(winner, " def.\n", loser)))
 
 saveRDS(data_df, "data_df_join.RDS")
