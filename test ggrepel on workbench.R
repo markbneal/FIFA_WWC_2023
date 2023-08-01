@@ -1,11 +1,11 @@
 # test ggrepel on workbench
 
 #install.packages("palmerpenguins")
+#install.packages("tidyverse")
+#install.packages("ggrepel")
 library(palmerpenguins)
 library(tidyverse)
 library(ggrepel)
-
-data(package = 'palmerpenguins')
 
 penguins
 
