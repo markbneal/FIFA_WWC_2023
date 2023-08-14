@@ -31,8 +31,8 @@ p <- ggplot(data = data_df_join, aes(x = rank_diff, y = point_diff))+
                                           size = 0.25,
                                           linetype = 1))+
   theme(panel.grid.minor.y = element_blank())+
-  annotate("text", x=-40, y=5, label = "Hammering by more than expected", colour = "darkgreen")+
-  ggtitle("Greater rank differences typically lead to \ngreater point differences")+
+  annotate("text", x=-40, y=5.5, label = "Hammering by more than expected", colour = "darkgreen")+
+  ggtitle("Greater rank differences tend to lead to \ngreater point differences, though large variation")+
   #geom_text(aes(label = game), size=3 )
   geom_text_repel(aes(label = game_result)) # caused error on workbench
 
@@ -54,9 +54,10 @@ q <- ggplot(data = data_df_join, aes(x = abs_rank_diff, y = rel_point_diff))+
   geom_jitter(width = 0, height = 0.2, alpha = 0.2) +
   geom_smooth(method = "lm", formula = "y ~ x") +
   #stat_poly_line(formula = "y ~ x", orientation = "x", na.rm = TRUE) +
-  stat_poly_eq(use_label(c("eq", "adj.R2")), formula = "y ~ x", orientation = "x", na.rm = TRUE, size = 3) +
+  stat_poly_eq(use_label(c("eq", "adj.R2")), formula = "y ~ x", orientation = "x", na.rm = TRUE, size = 3,  label.x = "right",) +
   xlab("Rank Difference (Lesser rank - Greater rank)") +
   ylab("Point Difference in favour of greater ranked team" )+
+  labs(caption = "Data source: apifootball.com")
   annotate("text", x=40, y=-3, label = "Unexpected Upset", colour = "red")+
   annotate("text", x=60, y=0, label = "Draw", colour = "blue")+
   scale_y_continuous(breaks = seq(-6, 6, by = 1))+
@@ -64,8 +65,8 @@ q <- ggplot(data = data_df_join, aes(x = abs_rank_diff, y = rel_point_diff))+
                                           size = 0.25,
                                           linetype = 1))+
   theme(panel.grid.minor.y = element_blank())+
-  annotate("text", x=40, y=5, label = "Hammered by more than expected", colour = "darkgreen")+
-  ggtitle("Greater rank differences typically lead to \ngreater point differences")+
+  annotate("text", x=40, y=5.5, label = "Hammered by more than expected", colour = "darkgreen")+
+  ggtitle("Greater rank differences tend to lead to \ngreater point differences, though large variation")+
   #geom_text(aes(label = game), size=3 )
   geom_text_repel(aes(label = game_result), size = 3) # caused error
 

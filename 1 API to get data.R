@@ -44,7 +44,7 @@ countries
 
 # Get game data (note date is hardcoded in url for pool games)
 # From documentation, League #20 is Womens World Cup
-results <- GET(paste0("https://apiv3.apifootball.com/?action=get_events&from=2023-07-01&to=2023-08-04&league_id=20&APIkey=",
+results <- GET(paste0("https://apiv3.apifootball.com/?action=get_events&from=2023-07-01&to=2023-08-14&league_id=20&APIkey=",
                    API_football))
 
 
